@@ -5,6 +5,12 @@ jdbf
 
 Java utility to read/write DBF files
 
+### Version 2.1.1
+
+Changed file reading method, using RandomAccessFile instead of BufferedInputStream.
+
+ The original `net.iryndin.jdbf.reader.DbfReader` and `net.iryndin.jdbf.reader.MemoReader` used BufferedInputStream with buffer size of 1MB, 8KB. This may cause unexpected IOException when stream is read over their buffer size(so the BufferedInputStream's mark is invalidated) and `BufferedInputStream.reset()` is called. Using RandomAccessFile resolves this problem by seeking around with natively supported method, not reset() and skip()-ing. However, the seeking time might be slightly slower compared to seeking in the buffer, and the support for InputStream(such as `net.iryndin.jdbf.reader.DbfReader.DbfReader(InputStream)`) is dropped.
+
 ### Version 2.1.0
 
 Fix issue [#5](https://github.com/iryndin/jdbf/issues/5) - don't load DBF and MEMO files into memory when reading it (thanks to Eugene Michuk for noticing this!)
