@@ -1,16 +1,17 @@
 package net.iryndin.jdbf;
 
-import net.iryndin.jdbf.core.DbfMetadata;
-import net.iryndin.jdbf.core.DbfRecord;
-import net.iryndin.jdbf.reader.DbfReader;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import net.iryndin.jdbf.core.DbfMetadata;
+import net.iryndin.jdbf.core.DbfRecord;
+import net.iryndin.jdbf.reader.DbfReader;
 
 public class TestDbfReader {
 
@@ -18,7 +19,7 @@ public class TestDbfReader {
     public void test1() throws IOException, ParseException {
         Charset stringCharset = Charset.forName("Cp866");
 
-        InputStream dbf = getClass().getClassLoader().getResourceAsStream("data1/gds_im.dbf");
+        File dbf = new File(getClass().getClassLoader().getResource("data1/gds_im.dbf").getPath());
 
         DbfRecord rec;
         try (DbfReader reader = new DbfReader(dbf)) {
@@ -45,7 +46,7 @@ public class TestDbfReader {
     public void test2() throws IOException, ParseException {
         Charset stringCharset = Charset.forName("Cp866");
 
-        InputStream dbf = getClass().getClassLoader().getResourceAsStream("data1/tir_im.dbf");
+        File dbf = new File(getClass().getClassLoader().getResource("data1/tir_im.dbf").getPath());
 
         DbfRecord rec;
         try (DbfReader reader = new DbfReader(dbf)) {

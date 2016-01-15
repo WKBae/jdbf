@@ -1,17 +1,18 @@
 package net.iryndin.jdbf;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.text.ParseException;
+
+import org.junit.Test;
+
 import net.iryndin.jdbf.core.DbfFieldTypeEnum;
 import net.iryndin.jdbf.core.DbfMetadata;
 import net.iryndin.jdbf.core.DbfRecord;
 import net.iryndin.jdbf.reader.DbfReader;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.text.ParseException;
-
-import static org.junit.Assert.assertEquals;
 
 public class TestMemo {
 
@@ -19,8 +20,8 @@ public class TestMemo {
     public void test1() {
         Charset stringCharset = Charset.forName("cp1252");
 
-        InputStream dbf = getClass().getClassLoader().getResourceAsStream("memo1/texto.dbf");
-        InputStream memo = getClass().getClassLoader().getResourceAsStream("memo1/texto.fpt");
+        File dbf = new File(getClass().getClassLoader().getResource("memo1/texto.dbf").getPath());
+        File memo = new File(getClass().getClassLoader().getResource("memo1/texto.fpt").getPath());
 
         try (DbfReader reader = new DbfReader(dbf, memo)) {
             DbfMetadata meta = reader.getMetadata();

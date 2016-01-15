@@ -6,6 +6,7 @@ import net.iryndin.jdbf.core.DbfFileTypeEnum;
 import net.iryndin.jdbf.core.DbfMetadata;
 
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -110,6 +111,44 @@ public class DbfMetadataUtils {
         metadata.setFields(fields);
     }
 
+    public static void readFields(DbfMetadata metadata, RandomAccessFile randomAccess) throws IOException {
+        List<DbfField> fields = new ArrayList<>();
+        byte[] fieldBytes = new byte[JdbfUtils.FIELD_RECORD_LENGTH];
+        int headerLength = 0;
+        int fieldLength = 0;
+        while (true) {
+            randomAccess.read(fieldBytes);
+            DbfField field = createDbfField(fieldBytes);
+            fields.add(field);
+
+            fieldLength += field.getLength();
+            headerLength += fieldBytes.length;
+
+            //long oldAvailable = randomAccess.length() - randomAccess.getFilePointer();//inputStream.available();
+            long oldPointer = randomAccess.getFilePointer();
+            int terminator = randomAccess.read();
+            if (terminator == JdbfUtils.HEADER_TERMINATOR) {
+                break;
+            } else {
+                //inputStream.reset();
+                //inputStream.skip(inputStream.available() - oldAvailable);
+            	randomAccess.seek(oldPointer); // TODO ..?
+            }
+        }
+        fieldLength += 1;
+        headerLength += 32;
+        headerLength += 1;
+
+        if (headerLength != metadata.getFullHeaderLength()) {
+            // TODO: handle this anyway!
+        }
+        if (fieldLength != metadata.getOneRecordLength()) {
+            // TODO: handle this anyway!
+        }
+
+        metadata.setFields(fields);
+    }
+    
     public static DbfField createDbfField(byte[] fieldBytes) {
         DbfField field = new DbfField();
         // 1. Set name
